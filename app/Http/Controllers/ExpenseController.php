@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ExpenseRequest;
 use App\Models\Expense;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ExpenseController extends Controller
 {
@@ -33,8 +34,11 @@ class ExpenseController extends Controller
     public function store(Request $request)
     {
         //
+        //$this->authorize("view", Expense::class);
         try{
-            $expense = Expense::create($request->all());
+            $data = $request->all();
+            $data["user_id"] =  Auth::id();
+            $expense = Expense::create($data);
             return response()->json([
                 "message" => "expenses retrieved successfully",
                 "expenses" => $expense
@@ -66,9 +70,10 @@ class ExpenseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(ExpenseRequest $request, $id)
+    public function update(ExpenseRequest $request, $id, Expense $expense)
     {
         //
+        $this->authorize("update", $expense);
         try{
             $expense = Expense::findOrFail($id);
             $expense->update($request->all());

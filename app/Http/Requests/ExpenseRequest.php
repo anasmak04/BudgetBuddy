@@ -27,7 +27,6 @@ class ExpenseRequest extends FormRequest
             "description" => "required",
             "price" => "required",
             "date" => "required",
-            "user_id" => "required",
         ];
     }
 }
